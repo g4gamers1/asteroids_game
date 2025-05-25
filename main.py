@@ -20,7 +20,7 @@ def main():
     Asteroid.containers = (asteroids_group, updatable_group, drawable_group)
     AsteroidField.containers = (updatable_group)
     Player.containers = (updatable_group, drawable_group)
-    Shot.containers = (updatable_group, drawable_group)
+    Shot.containers = (shots_group, updatable_group, drawable_group)
 
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
     asteroidField = AsteroidField()
@@ -33,11 +33,15 @@ def main():
 
         updatable_group.update(dt)   
 
-        for astroids in asteroids_group:
-            if astroids.check_collions(player):
+        for asteroid in asteroids_group:
+            if asteroid.check_collision(player):
                 print("Game over!")
                 pygame.quit()
                 sys.exit()
+            for shot in shots_group:
+                if asteroid.check_collision(shot):
+                    asteroid.split()
+                    shot.kill()
         
         screen.fill("black")
         for drawable in drawable_group:
